@@ -1,0 +1,289 @@
+/* Collab Board — frontend styles (stage 3).
+   No build step, no external assets: one stylesheet for the app shell,
+   boards list and the board view. Same palette as flagship 1 so the
+   two apps feel like one family. */
+
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #1c2333;
+  --muted: #5b6474;
+  --line: #dfe3ea;
+  --brand: #1f3a5f;
+  --brand-ink: #ffffff;
+  --accent: #c9a227;
+  --danger: #b3261e;
+  --danger-bg: #fdecea;
+  --ok: #1e7d32;
+  --ok-bg: #e6f4ea;
+  --warn-bg: #fff4d6;
+  --warn-ink: #7a5200;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgb(16 24 40 / 0.12), 0 1px 2px rgb(16 24 40 / 0.06);
+  --focus: 0 0 0 3px rgb(31 58 95 / 0.35);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+h1 { font-size: 1.4rem; margin: 0 0 0.75rem; }
+h2 { font-size: 1.05rem; margin: 0 0 0.5rem; }
+h3 { font-size: 1rem; margin: 0 0 0.25rem; }
+p { margin: 0 0 0.75rem; }
+
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.empty { color: var(--muted); font-style: italic; }
+
+/* Visible keyboard focus everywhere. */
+:focus-visible { outline: none; box-shadow: var(--focus); border-radius: 4px; }
+
+label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.6rem; }
+input, select, textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+input:disabled, select:disabled, textarea:disabled { background: #eef0f3; color: var(--muted); }
+
+.btn {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--brand); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+.btn-primary:hover { filter: brightness(1.15); }
+.btn-danger { color: var(--danger); }
+.btn-danger:hover { background: var(--danger-bg); border-color: var(--danger); }
+.btn-small { padding: 0.25rem 0.6rem; font-size: 0.85rem; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+}
+
+/* --- top bar ----------------------------------------------------------- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--brand);
+  color: var(--brand-ink);
+}
+.brand { font-weight: 800; font-size: 1.1rem; letter-spacing: 0.02em; }
+.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
+.topbar .muted { color: #cdd6e4; }
+.topbar .btn { border-color: transparent; }
+
+main { padding: 1rem; max-width: 1400px; margin: 0 auto; }
+
+/* --- auth -------------------------------------------------------------- */
+.auth-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  max-width: 760px;
+  margin: 2rem auto;
+}
+.auth-grid .btn { width: 100%; margin-top: 0.25rem; }
+
+/* --- boards list -------------------------------------------------------- */
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.inline-form label { flex: 1 1 200px; margin-bottom: 0; }
+.inline-form .btn { flex: 0 0 auto; }
+
+.boards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.board-card { display: flex; flex-direction: column; gap: 0.25rem; }
+.card-row { display: flex; align-items: center; gap: 0.5rem; margin-top: auto; padding-top: 0.5rem; }
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: #e8edf3;
+  color: var(--brand);
+}
+.badge-owner { background: var(--brand); color: var(--brand-ink); }
+.badge-editor { background: #e3f0ff; color: #14532d; }
+.badge-viewer { background: #f0e6d2; color: #6b4e00; }
+
+/* --- board view ---------------------------------------------------------- */
+.view-board { max-width: none; }
+.board-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.board-title-block { flex: 1 1 auto; min-width: 200px; }
+.board-title-block h1 { margin: 0; }
+.board-title-block p { margin: 0; }
+
+.conn {
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.conn-live { background: var(--ok-bg); color: var(--ok); }
+.conn-reconnecting { background: var(--warn-bg); color: var(--warn-ink); }
+.conn-offline { background: var(--danger-bg); color: var(--danger); }
+
+.banner {
+  background: var(--warn-bg);
+  color: var(--warn-ink);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.toolbar-sep { width: 1px; height: 1.6rem; background: var(--line); margin: 0 0.3rem; }
+.tool-btn.active { background: var(--brand); border-color: var(--brand); color: var(--brand-ink); }
+
+.board-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+.canvas-wrap {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #f4f6f8;
+  min-height: 480px;
+  height: calc(100vh - 260px);
+  box-shadow: var(--shadow);
+}
+#board-canvas { display: block; width: 100%; height: 100%; touch-action: none; }
+.presence-bar {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  max-width: 90%;
+}
+.presence-chip {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+.presence-chip.me { border-color: var(--brand); color: var(--brand); }
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.panel-section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.9rem 1rem;
+}
+.panel-section .btn { margin-top: 0.5rem; }
+.panel-section .btn + .btn { margin-left: 0.4rem; }
+
+.members-list { list-style: none; margin: 0; padding: 0; }
+.member-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+.member-row:last-child { border-bottom: none; }
+.member-row > span:first-child { flex: 1 1 auto; min-width: 120px; }
+.member-row select { width: auto; flex: 0 0 auto; }
+.add-member { margin-top: 0.75rem; }
+
+/* --- activity feed (stage 4) -------------------------------------------- */
+.activity-list { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow-y: auto; }
+.activity-entry { display: flex; flex-direction: column; gap: 0.1rem; padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
+.activity-entry:last-child { border-bottom: none; }
+.activity-time { color: var(--muted); }
+
+/* --- toast --------------------------------------------------------------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translate(-50%, 150%);
+  background: var(--ink);
+  color: #fff;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  max-width: min(90vw, 560px);
+  z-index: 50;
+}
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+.toast.error { background: var(--danger); }
+.toast.warn { background: var(--warn-ink); }
+
+/* --- responsive ---------------------------------------------------------- */
+@media (max-width: 900px) {
+  .board-layout { grid-template-columns: 1fr; }
+  .canvas-wrap { height: 60vh; min-height: 360px; }
+  main { padding: 0.75rem; }
+}

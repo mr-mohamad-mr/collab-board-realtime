@@ -1,0 +1,6 @@
+fastapi>=0.115
+uvicorn[standard]>=0.30
+httpx>=0.27  # TestClient transport + seed script (tests/seed only)
+pytest>=8.0  # tests only
+websockets>=15  # live smoke-test client only (scripts/ws_smoke.py)
+pyyaml>=6.0  # stage-4 smoke test only (validates docker-compose.yml)

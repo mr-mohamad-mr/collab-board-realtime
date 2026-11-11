@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collab Board — real-time collaborative boards</title>
+<link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">Collab Board</div>
+  <div class="topbar-right">
+    <span id="user-label" class="muted"></span>
+    <button id="logout-btn" class="btn btn-small" type="button">Log out</button>
+  </div>
+</header>
+
+<main>
+  <!-- Auth -->
+  <section id="view-auth" class="view" aria-label="Sign in">
+    <div class="auth-grid">
+      <form id="login-form" class="card" autocomplete="on">
+        <h2>Log in</h2>
+        <label>Username
+          <input id="login-username" name="username" required minlength="3" autocomplete="username">
+        </label>
+        <label>Password
+          <input id="login-password" name="current-password" type="password" required autocomplete="current-password">
+        </label>
+        <button class="btn btn-primary" type="submit">Log in</button>
+      </form>
+      <form id="register-form" class="card" autocomplete="on">
+        <h2>Create an account</h2>
+        <label>Username
+          <input id="reg-username" name="username" required minlength="3" pattern="[a-zA-Z0-9_.-]+" autocomplete="username">
+        </label>
+        <label>Display name
+          <input id="reg-display" name="display-name" maxlength="64" autocomplete="name">
+        </label>
+        <label>Password
+          <input id="reg-password" name="new-password" type="password" required minlength="8" autocomplete="new-password">
+        </label>
+        <button class="btn btn-primary" type="submit">Register</button>
+        <p class="muted small">Usernames are 3–32 characters: letters, digits, <code>_ . -</code></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- Boards list -->
+  <section id="view-boards" class="view" aria-label="Your boards" hidden>
+    <h1>Your boards</h1>
+    <form id="create-board-form" class="card inline-form">
+      <label>New board title
+        <input id="new-board-title" required maxlength="200" placeholder="e.g. Launch plan">
+      </label>
+      <label>Description
+        <input id="new-board-desc" maxlength="2000" placeholder="Optional">
+      </label>
+      <button class="btn btn-primary" type="submit">Create board</button>
+    </form>
+    <div id="boards-list" class="boards-grid"></div>
+  </section>
+
+  <!-- One board -->
+  <section id="view-board" class="view view-board" aria-label="Board" hidden>
+    <div class="board-header">
+      <button id="back-to-boards" class="btn btn-small" type="button">← Boards</button>
+      <div class="board-title-block">
+        <h1 id="board-title">Loading…</h1>
+        <p id="board-desc" class="muted"></p>
+      </div>
+      <button id="rename-board" class="btn btn-small" type="button">Rename</button>
+      <span id="conn-status" class="conn conn-reconnecting" role="status">◌ Connecting…</span>
+      <span id="board-revision" class="muted small"></span>
+    </div>
+
+    <p id="viewer-banner" class="banner" hidden>You are viewing this board read-only — only editors can move or add items.</p>
+
+    <div class="toolbar" role="toolbar" aria-label="Board tools">
+      <button type="button" class="btn tool-btn active" data-tool="select" aria-pressed="true" title="Select / move (drag empty space to pan)">Select</button>
+      <button type="button" class="btn tool-btn" data-tool="pan" aria-pressed="false" title="Pan the canvas">Pan</button>
+      <span class="toolbar-sep" aria-hidden="true"></span>
+      <button type="button" class="btn tool-btn" data-tool="note" aria-pressed="false" title="Click the canvas to add a sticky note">+ Note</button>
+      <button type="button" class="btn tool-btn" data-tool="rect" aria-pressed="false" title="Click the canvas to add a rectangle">+ Rectangle</button>
+      <button type="button" class="btn tool-btn" data-tool="text" aria-pressed="false" title="Click the canvas to add text">+ Text</button>
+      <button type="button" class="btn tool-btn" data-tool="circle" aria-pressed="false" title="Click the canvas to add a circle">+ Circle</button>
+      <span class="toolbar-sep" aria-hidden="true"></span>
+      <button type="button" id="zoom-out" class="btn" aria-label="Zoom out">−</button>
+      <button type="button" id="zoom-fit" class="btn" aria-label="Fit board to screen">Fit</button>
+      <button type="button" id="zoom-in" class="btn" aria-label="Zoom in">+</button>
+    </div>
+
+    <div class="board-layout">
+      <div class="canvas-wrap">
+        <canvas id="board-canvas" tabindex="0" role="application"
+          aria-label="Collaborative board canvas. Drag items to move them, double-click empty space to add a note, Delete removes the selected item."></canvas>
+        <div id="presence-bar" class="presence-bar" aria-label="People on this board"></div>
+      </div>
+      <aside class="side-panel" aria-label="Board details">
+        <section class="panel-section">
+          <h2>Selected item</h2>
+          <div id="inspector"></div>
+        </section>
+        <section class="panel-section">
+          <h2>Members</h2>
+          <ul id="members-list" class="members-list"></ul>
+          <form id="add-member-form" class="add-member">
+            <label>Username
+              <input id="add-member-username" required placeholder="username">
+            </label>
+            <label>Role
+              <select id="add-member-role">
+                <option value="editor" selected>editor</option>
+                <option value="viewer">viewer</option>
+              </select>
+            </label>
+            <button class="btn btn-primary btn-small" type="submit">Add member</button>
+          </form>
+          <p class="muted small">Only the board owner can add members or change roles.</p>
+        </section>
+        <section class="panel-section">
+          <h2>Activity</h2>
+          <ul id="activity-list" class="activity-list" aria-live="polite"></ul>
+          <button id="activity-more" class="btn btn-small" type="button">Load older activity</button>
+        </section>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/static/js/api.js"></script>
+<script src="/static/js/sync.js"></script>
+<script src="/static/js/board.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
